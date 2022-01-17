@@ -81,11 +81,7 @@ class TodoListViewController: UITableViewController {
     // MARK: - Model Manupulation Methods
     
     func saveItems() {
-        //        let newFloderUrl = dataFilePath!
-        //        let encoder = PropertyListEncoder()
         do {
-            //            let data = try encoder.encode(itemArray)
-            //            try data.write(to: self.dataFilePath!)
             try CoreDataHelper.shared.saveContext()
         } catch {
             print("Error saving context, \(error)")

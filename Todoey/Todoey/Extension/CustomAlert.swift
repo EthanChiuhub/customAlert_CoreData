@@ -12,7 +12,6 @@ class CustomAlert: UIView {
     }
     
     weak var delegate: passUserTextDelegate?
-//    let userText = UITextField()
     let userText: UITextField = {
         let textfield = UITextField()
         textfield.placeholder = "Enter text here"
