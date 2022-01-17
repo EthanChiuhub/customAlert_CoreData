@@ -5,16 +5,37 @@ protocol passUserTextDelegate: AnyObject {
     func addItemText(userText: String)
 }
 
-class CustomAlert: UIViewController {
+class CustomAlert: UIView {
     
     struct Constants {
         static let backgroundAlphaTo: CGFloat = 0.6
     }
     
     weak var delegate: passUserTextDelegate?
+//    let userText = UITextField()
+    let userText: UITextField = {
+        let textfield = UITextField()
+        textfield.placeholder = "Enter text here"
+        textfield.borderStyle = UITextField.BorderStyle.roundedRect
+        textfield.keyboardType = UIKeyboardType.default
+       return textfield
+    }()
     
-    var userText: UITextField!
+    let titleLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+       return label
+    }()
+        
+    let disMissButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Dismiss", for: .normal)
+        button.setTitleColor(.red, for: .normal)
+       return button
+    }()
     
+    let addItemButtom = UIButton()
+
     private let alertView: UIView = {
         let alert = UIView()
         alert.backgroundColor = .white
@@ -30,33 +51,26 @@ class CustomAlert: UIViewController {
         backgroundView.alpha = 0
         return backgroundView
     }()
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
     
     func showAlert(with title: String,
                    message: String,
-//                   actionHandler: ((_ text: String?) -> Void)? ,
                    on viewController: UIViewController) {
         guard let targetView = UIApplication.shared.windows.first else {return}
         backgroundView.frame = UIScreen.main.bounds
         myTargetView = targetView
         targetView.addSubview(backgroundView)
         targetView.addSubview(alertView)
-        alertView.frame = CGRect(x: 40,
-                                 y: -300,
-                                 width: targetView.frame.size.width-80,
-                                 height: 300)
+        alertView.frame = CGRect(x: 40, y: -300, width: targetView.frame.size.width-80, height: 300)
         
         // MARK: - Custom Alert titleLabel
-        let titleLabel = UILabel(frame: CGRect(x: 0,
-                                               y: 0,
-                                               width: alertView.frame.size.width,
-                                               height: 80))
         titleLabel.text = title
-        titleLabel.textAlignment = .center
         alertView.addSubview(titleLabel)
-        
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: alertView.topAnchor, constant: 20),
+            titleLabel.widthAnchor.constraint(equalTo: alertView.widthAnchor),
+            titleLabel.heightAnchor.constraint(equalToConstant: 80)
+        ])
         // MARK: - Custom Alert MessageLabel
         //        let messageLabel = UILabel(frame: CGRect(x: 0,
         //                                                 y: 80,
@@ -67,36 +81,40 @@ class CustomAlert: UIViewController {
         //        messageLabel.textAlignment = .center
         //        alertView.addSubview(messageLabel)
         // MARK: - Cusstom Alert TextField
-        userText = UITextField(frame: CGRect(x: alertView.frame.width/4,
-                                             y: alertView.frame.height/2.5,
-                                                       width: alertView.frame.size.width/2,
-                                                       height: 50))
-        userText.placeholder = "Enter text here"
-        userText.borderStyle = UITextField.BorderStyle.roundedRect
-        userText.keyboardType = UIKeyboardType.default
-        userText.delegate = self
-        alertView.addSubview(userText)
         
+        alertView.addSubview(userText)
+        userText.delegate = self
+        userText.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            userText.centerXAnchor.constraint(equalTo: alertView.centerXAnchor),
+            userText.centerYAnchor.constraint(equalTo: alertView.centerYAnchor),
+            userText.widthAnchor.constraint(equalTo: alertView.widthAnchor, multiplier: 0.8),
+            userText.heightAnchor.constraint(equalToConstant: 50)
+        ])
         
         // MARK: - Custom Alert Buttom
-        let disMissButton = UIButton(frame: CGRect(x: 0,
-                                                   y: alertView.frame.size.height-80,
-                                                   width: alertView.frame.size.width/2,
-                                                   height: 50))
-        disMissButton.setTitle("Dismiss", for: .normal)
-        disMissButton.setTitleColor(.red, for: .normal)
         disMissButton.addTarget(self, action: #selector(dismissAlert), for: .touchUpInside)
         alertView.addSubview(disMissButton)
-        
-        let addItemButtom = UIButton(frame: CGRect(x: 100,
-                                                   y: alertView.frame.size.height-80,
-                                                   width: alertView.frame.size.width/2,
-                                                   height: 50))
+        disMissButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            disMissButton.leadingAnchor.constraint(equalTo: alertView.leadingAnchor, constant: 15),
+            disMissButton.bottomAnchor.constraint(equalTo: alertView.bottomAnchor, constant: -30),
+            disMissButton.widthAnchor.constraint(equalToConstant: 150),
+            disMissButton.heightAnchor.constraint(equalToConstant: 50)
+        ])
         
         addItemButtom.setTitle("Add Item", for: .normal)
         addItemButtom.setTitleColor(.link, for: .normal)
         addItemButtom.addTarget(self, action: #selector(addItem), for: .touchUpInside)
         alertView.addSubview(addItemButtom)
+        addItemButtom.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            addItemButtom.leadingAnchor.constraint(equalTo: disMissButton.trailingAnchor, constant: 5),
+            addItemButtom.bottomAnchor.constraint(equalTo: disMissButton.bottomAnchor),
+            addItemButtom.widthAnchor.constraint(equalTo: disMissButton.widthAnchor),
+            addItemButtom.heightAnchor.constraint(equalTo: disMissButton.heightAnchor)
+        
+        ])
         
         UIView.animate(withDuration: 0.25, animations: {
             self.backgroundView.alpha = Constants.backgroundAlphaTo
@@ -122,10 +140,10 @@ class CustomAlert: UIViewController {
                     self.backgroundView.alpha = 0
                 }) { done in
                     if done {
-                        print(self.userText.text)
-                        self.delegate?.addItemText(userText: self.userText.text ?? "")
-                        self.alertView.removeFromSuperview()
-                        self.backgroundView.removeFromSuperview()
+                            print(self.userText.text)
+                            self.delegate?.addItemText(userText: self.userText.text ?? "")
+                            self.alertView.removeFromSuperview()
+                            self.backgroundView.removeFromSuperview()
                     }
                 }
             }
@@ -160,6 +178,6 @@ extension CustomAlert: UITextFieldDelegate {
         return true
     }
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
+        self.endEditing(true)
     }
 }

@@ -68,10 +68,17 @@
 		3B4EB4C027707F2F006312EB /* View */ = {
 			isa = PBXGroup;
 			children = (
-				3B5B4BDC276C32EF0066B11E /* CustomAlert.swift */,
 				EB2BE4FF239524DB00FB933B /* Main.storyboard */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		3BF069752792C49C0063D686 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				3B5B4BDC276C32EF0066B11E /* CustomAlert.swift */,
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 		703C1A2F867B33CB96C1FD69 /* Pods */ = {
@@ -112,10 +119,11 @@
 		EB2BE4F8239524DB00FB933B /* Todoey */ = {
 			isa = PBXGroup;
 			children = (
+				EB2BE4F9239524DB00FB933B /* AppDelegate.swift */,
 				3B7DDDD22771706800AD8E19 /* CoreDataHelper.swift */,
+				3BF069752792C49C0063D686 /* Extension */,
 				3B4EB4BD27707F00006312EB /* Model */,
 				3B4EB4C027707F2F006312EB /* View */,
-				EB2BE4F9239524DB00FB933B /* AppDelegate.swift */,
 				3B4EB4BE27707F07006312EB /* Controllers */,
 				EB2BE502239524DC00FB933B /* Assets.xcassets */,
 				EB2BE504239524DC00FB933B /* LaunchScreen.storyboard */,

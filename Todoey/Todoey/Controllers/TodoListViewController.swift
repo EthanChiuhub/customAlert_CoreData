@@ -12,22 +12,22 @@ class TodoListViewController: UITableViewController {
     let customAlert = CustomAlert()
     let searchBar = UISearchBar()
     let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
-    //    let context = (UIApplication.shared.delegate as! AppDelegate).coreDataHelper.persistentContainer.viewContext
     let context = CoreDataHelper.shared.persistentContainer.viewContext
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupUI()
         customAlert.delegate = self
         searchBar.delegate = self
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         var contentOffset: CGPoint = self.tableView.contentOffset
         contentOffset.y += (self.tableView.tableHeaderView?.frame)!.height
         self.tableView.contentOffset = contentOffset
     }
+    
     private func setupUI() {
         let addList = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(clickAddList))
         self.navigationItem.rightBarButtonItem = addList
@@ -35,9 +35,11 @@ class TodoListViewController: UITableViewController {
         searchBar.sizeToFit()
         self.tableView.tableHeaderView = searchBar
     }
+    
     @objc private func clickAddList() {
         customAlert.showAlert(with: "Add New Todoey Item", message: "", on: self)
     }
+    
     @objc func dismissAlert() {
         customAlert.dismissAlert()
         customAlert.addItem()
@@ -47,6 +49,7 @@ class TodoListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return itemArray.count
     }
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TodoItemCell", for: indexPath)
         if #available(iOS 14.0, *) {
@@ -63,25 +66,14 @@ class TodoListViewController: UITableViewController {
         }
         return cell
     }
+    
     // MARK: - TableView Delegate Methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
         //Core Data Delet
-//        context.delete(itemArray[indexPath.row])
-//        itemArray.remove(at: indexPath.row)
-                itemArray[indexPath.row].done = !itemArray[indexPath.row].done
-        //        if itemArray[indexPath.row].done == false {
-        //            itemArray[indexPath.row].done = true
-        //        }else {
-        //            itemArray[indexPath.row].done = false
-        //        }
-        //        if let cell = tableView.cellForRow(at: indexPath as IndexPath) {
-        //            if cell.accessoryType == .checkmark {
-        //                cell.accessoryType = .none
-        //            }else {
-        //                cell.accessoryType = .checkmark
-        //            }
-        //        }
+        //        context.delete(itemArray[indexPath.row])
+        //        itemArray.remove(at: indexPath.row)
+        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         saveItems()
         tableView.reloadData()
         tableView.deselectRow(at: indexPath, animated: true)
@@ -120,12 +112,12 @@ class TodoListViewController: UITableViewController {
 // MARK: - CustomAlert Delegate
 extension TodoListViewController: passUserTextDelegate {
     func addItemText(userText: String) {
-        let newItem = Item(context: self.context)
-        newItem.title = userText
-        newItem.done = false
-        newItem.parentCategory = self.selectedCategory
-        itemArray.append(newItem)
-        saveItems()
+            let newItem = Item(context: self.context)
+            newItem.title = userText
+            newItem.done = false
+            newItem.parentCategory = self.selectedCategory
+            itemArray.append(newItem)
+            saveItems()
         tableView.reloadData()
     }}
 

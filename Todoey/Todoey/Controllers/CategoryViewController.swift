@@ -13,6 +13,9 @@ class CategoryViewController: UITableViewController {
         customAlert.delegate = self
         loadCategories()
     }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+    }
     
     private func setupUI() {
         let addCategory = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addClick))
@@ -71,9 +74,13 @@ class CategoryViewController: UITableViewController {
 
 extension CategoryViewController: passUserTextDelegate {
     func addItemText(userText: String) {
-        let addCategories = Category(context: self.context)
-        addCategories.name = userText
-        categories.append(addCategories)
-        saveCategories()
+        if userText != "" {
+            let addCategories = Category(context: self.context)
+            addCategories.name = userText
+            categories.append(addCategories)
+            saveCategories()
+        }else {
+            return
+        }
     }
 }
